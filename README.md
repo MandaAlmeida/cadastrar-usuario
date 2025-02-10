@@ -2,13 +2,15 @@
 
 ## Descrição
 
-Este projeto consiste na construção de uma API de CRUD de usuários utilizando **Node.js** e a biblioteca **Express**. O objetivo principal é gerenciar informações de usuários com as funcionalidades de **cadastrar**, **listar**, **atualizar**, **excluir** e **validar** dados. A aplicação também foi construída com **React** no front-end para fornecer uma interface de usuário.
+Este projeto consiste na construção de uma API de CRUD de usuários utilizando **Node.js** e a biblioteca **Express**. O objetivo principal é gerenciar informações de usuários com as funcionalidades de **cadastrar**, **listar**, **atualizar**, **excluir** e **filtrar**. A aplicação também foi construída com **React** no front-end para fornecer uma interface de usuário.
+
+![Imagem do Projeto](./assets/printProject.png)
 
 ## Funcionalidades
 
 ### Back-end (API)
 - **Cadastrar um novo usuário**: Endpoint para criar um novo usuário com informações básicas, como nome, e-mail e data de nascimento.
-- **Listar todos os usuários**: Endpoint que lista todos os usuários, com a possibilidade de adicionar filtros de pesquisa e ordenação (exemplo: listar usuários cujo nome inicie com "A", ordenados por idade).
+- **Listar todos os usuários**: Endpoint que lista todos os usuários, com a possibilidade de adicionar filtros de pesquisa e ordenação
 - **Listar um usuário**: Endpoint para listar as informações detalhadas de um usuário específico.
 - **Excluir um usuário**: Endpoint para excluir um usuário pelo seu ID.
 - **Atualizar dados de um usuário**: Endpoint para editar as informações de um usuário.
@@ -102,20 +104,46 @@ Body:
 ]
 ```
 
-3. **GET /users/:id** - Listar um usuário específico
-
-. Parâmetros: id do usuário.
-. Resposta:
+3. **GET /filter** - Filtrar usuários por nome e idade
 
 ```json
   {
-  "id": "1",
-  "name": "Ana",
-  "email": "ana@exemplo.com",
-  "birth": "1990-01-01"
+    "id": "1",
+    "name": "Ana",
+    "email": "ana@exemplo.com",
+    "birth": "1990-01-01"
+  }
+```
+
+4. **PUT /:id** - Atualizar dados de um usuário
+
+```json
+{
+  "message": "Dados de usuário atualizados com sucesso",
+  "user": {
+    "id": "1",
+    "name": "Carlos",
+    "email": "carlos@exemplo.com",
+    "birth": "1992-05-14"
+  }
 }
 ```
+
+5. **DELETE /:id** - Excluir um usuário
+
+```json
+{
+  "message": "Usuário deletado com sucesso",
+  "user": {
+    "id": "1",
+    "name": "Carlos",
+    "email": "carlos@exemplo.com",
+    "birth": "1992-05-14"
+  }
+}
+```
+
 ### Considerações Finais
-. A validação de segurança está implementada para verificar se o e-mail do usuário já está registrado antes de criar um novo.
+. A validação de segurança está implementada para verificar se o e-mail do usuário já está registrado antes de criar um novo usuário.
 . A API utiliza o MongoDB para persistir os dados dos usuários.
 . O sistema de front-end foi feito para ser simples e fácil de usar, utilizando React com Tailwind CSS para um design responsivo.
