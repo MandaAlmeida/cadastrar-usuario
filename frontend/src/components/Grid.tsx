@@ -3,21 +3,18 @@ import { toast } from 'react-toastify'; // Importa o toast para exibir notifica�
 import { User } from "../@types/user"; // Importa o tipo User para tipar as informações dos usuários
 import { calculateAge } from "../utils/years"; // Função utilitária para calcular a idade com base na data de nascimento
 import { ArrowDown01, ArrowDownAZ, ChevronDown, ChevronUp, Filter, Search, SquarePen, Trash2 } from 'lucide-react'; // Importa ícones para UI
-import { useEffect, useState } from "react"; // Importa hooks do React
+import { useState } from "react"; // Importa hooks do React
+import { filterProps } from "../@types/filter";
 
 type Props = {
     users: User[]; // Lista de usuários a ser exibida
     setUsers: React.Dispatch<React.SetStateAction<User[]>>; // Função para atualizar a lista de usuários
     setOnEdit: React.Dispatch<React.SetStateAction<User>>; // Função para definir o usuário em modo de edição
+    setFilters: React.Dispatch<React.SetStateAction<filterProps>>;
+    filters: filterProps;
 }
 
-export function Grid({ users, setUsers, setOnEdit }: Props) {
-    // Estado agrupando os filtros
-    const [filters, setFilters] = useState({
-        byName: false,
-        byAge: false,
-        search: ""
-    });
+export function Grid({ users, setUsers, setOnEdit, setFilters, filters }: Props) {
     const [filter, setFilter] = useState(false);
 
     // Função para editar um usuário
@@ -39,29 +36,8 @@ export function Grid({ users, setUsers, setOnEdit }: Props) {
             })
             .catch(({ data }) => toast.error(data.error));
 
-        setOnEdit({ _id: "", birth: "", email: "", name: "" });
+        setOnEdit({ _id: "", birth: "", email: "", name: "", password: "", confirmPassword: "" });
     }
-
-    // Função para buscar usuários filtrados
-    async function fetchFilteredUsers() {
-        try {
-            const res = await axios.get('http://localhost:3001/filter', {
-                params: {
-                    name: filters.search || "",
-                    orderByName: filters.byName,
-                    orderByAge: filters.byAge,
-                }
-            });
-            setUsers(res.data);
-        } catch (error) {
-            toast.error(error instanceof Error ? error.message : "Ocorreu um erro inesperado.");
-        }
-    }
-
-    // Efeito que é executado sempre que algum dos filtros mudar
-    useEffect(() => {
-        fetchFilteredUsers();
-    }, [filters]); // Agora dependemos de 'filters', que é um único objeto
 
     return (
         <div className="w-full bg-white rounded-[6px] my-5 mx-auto p-5 max-sm:p-2">
@@ -126,6 +102,7 @@ export function Grid({ users, setUsers, setOnEdit }: Props) {
                                 <td className="py-4 px-5 text-start w-[30%]">{item.name}</td>
                                 <td className="py-4 px-2 text-start w-[40%]">{item.email}</td>
                                 <td className="py-4 px-2 text-start w-[10%]">{calculateAge(item.birth)}</td>
+
                                 {/* Botão de edição */}
                                 <td className="py-4 px-2 max-md:hidden">
                                     <button className="cursor-pointer hover:bg-amber-600 rounded-full h-[30px] w-[30px] flex items-center justify-center hover:text-white"

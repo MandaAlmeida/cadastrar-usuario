@@ -7,16 +7,18 @@ import { toast } from "react-toastify"; // Biblioteca para mostrar notificaçõe
 type Props = {
     users: User[], // Lista de usuários
     onEdit: User; // Usuário que está sendo editado
-    getUsers: () => Promise<void>; // Função para recarregar a lista de usuários
+    fetchUsers: () => Promise<void>; // Função para recarregar a lista de usuários
     setOnEdit: React.Dispatch<React.SetStateAction<User>>; // Função para atualizar o estado de edição do usuário
 };
 
-export function Form({ onEdit, setOnEdit, getUsers, users }: Props) {
+export function Form({ onEdit, setOnEdit, fetchUsers, users }: Props) {
     // Estado para armazenar os dados do formulário
     const [formData, setFormData] = useState<User>({
         name: "",
         email: "",
         birth: "",
+        password: "",
+        confirmPassword: ""
     });
 
     // Data de hoje, utilizada para restringir a data de nascimento no campo 'date'
@@ -53,11 +55,22 @@ export function Form({ onEdit, setOnEdit, getUsers, users }: Props) {
             name: formData.name,
             email: formData.email,
             birth: formData.birth,
+            password: formData.password,
+            confirmPassword: formData.confirmPassword
         };
 
         // Verifica se todos os campos estão preenchidos
-        if (!formData.name || !formData.email || !formData.birth) {
-            return toast.warn("Preencha todos os campos!"); // Exibe um alerta se algum campo estiver vazio
+        if (!onEdit._id) {
+            if (!formData.name || !formData.email || !formData.birth || !formData.password || !formData.confirmPassword) {
+                return toast.warn("Preencha todos os campos!"); // Exibe um alerta se algum campo estiver vazio
+            }
+        } else {
+            if (!formData.name || !formData.email || !formData.birth) {
+                return toast.warn("Preencha todos os campos!"); // Exibe um alerta se algum campo estiver vazio
+            }
+        }
+        if (formData.password !== formData.confirmPassword) {
+            return toast.warn("As senhas não conferem!")
         }
 
         // Verifica se o e-mail fornecido é válido
@@ -81,7 +94,7 @@ export function Form({ onEdit, setOnEdit, getUsers, users }: Props) {
                 return toast.error("Este e-mail já está registrado."); // Exibe erro caso o e-mail já exista
             } else {
                 try {
-                    const { data } = await axios.post("http://localhost:3001", user); // Faz uma requisição POST para criar um novo usuário
+                    const { data } = await axios.post("http://localhost:3001/auth/register", user); // Faz uma requisição POST para criar um novo usuário
                     toast.success(data.message || "Usuário criado com sucesso"); // Exibe sucesso após a criação
                 } catch (error: any) {
                     // Caso ocorra um erro, exibe a mensagem de erro retornada pelo backend
@@ -95,12 +108,15 @@ export function Form({ onEdit, setOnEdit, getUsers, users }: Props) {
         formData.name = "";
         formData.email = "";
         formData.birth = "";
+        formData.password = "";
+        formData.confirmPassword = "";
+
 
         // Redefine o estado de edição
-        setOnEdit({ _id: "", birth: "", email: "", name: "" });
+        setOnEdit({ _id: "", birth: "", email: "", name: "", password: "", confirmPassword: "" });
 
         // Recarrega a lista de usuários após a operação
-        getUsers();
+        fetchUsers();
     };
 
     return (
@@ -112,8 +128,8 @@ export function Form({ onEdit, setOnEdit, getUsers, users }: Props) {
                     className="w-[270px] pl-2.5 rounded-[6px] border border-[#bbb] h-10 max-md:text-[14px] max-md:w-[200px]"
                     name="name"
                     type="text"
-                    value={formData.name} // Exibe o nome atual no campo
-                    onChange={handleChange} // Atualiza o estado quando o campo for alterado
+                    value={formData.name}
+                    onChange={handleChange}
                 />
             </div>
 
@@ -124,8 +140,8 @@ export function Form({ onEdit, setOnEdit, getUsers, users }: Props) {
                     className="w-[270px] pl-2.5 rounded-[6px] border border-[#bbb] h-10 max-md:text-[14px] max-md:w-[200px]"
                     name="email"
                     type="text"
-                    value={formData.email} // Exibe o e-mail atual no campo
-                    onChange={handleChange} // Atualiza o estado quando o campo for alterado
+                    value={formData.email}
+                    onChange={handleChange}
                 />
             </div>
 
@@ -136,10 +152,31 @@ export function Form({ onEdit, setOnEdit, getUsers, users }: Props) {
                     className="w-[170px] pl-2.5 rounded-[6px] border border-[#bbb] h-10 max-md:text-[14px] max-md:w-[140px]"
                     name="birth"
                     type="date"
-                    min="1900-01-01" // Define a data mínima para o campo de data
-                    max={today} // Define a data máxima como a data atual
-                    value={formData.birth} // Exibe a data de nascimento atual no campo
-                    onChange={handleChange} // Atualiza o estado quando o campo for alterado
+                    min="1900-01-01"
+                    max={today}
+                    value={formData.birth}
+                    onChange={handleChange}
+                />
+            </div>
+
+            <div className="flex flex-col">
+                <label>Senha</label>
+                <input
+                    className="w-[170px] pl-2.5 rounded-[6px] border border-[#bbb] h-10 max-md:text-[14px] max-md:w-[200px]"
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                />
+            </div>
+            <div className="flex flex-col">
+                <label>Confirme sua senha</label>
+                <input
+                    className="w-[170px] pl-2.5 rounded-[6px] border border-[#bbb] h-10 max-md:text-[14px] max-md:w-[200px]"
+                    name="confirmPassword"
+                    type="password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
                 />
             </div>
 

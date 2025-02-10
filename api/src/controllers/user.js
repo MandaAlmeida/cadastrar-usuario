@@ -1,23 +1,113 @@
 // Importa o modelo User para interagir com o banco de dados
 import { User } from "../db.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
-// Função para listar todos os usuários
-export async function getUsers(_, res) {
-    try {
-        // Busca todos os usuários no banco de dados
-        let users = await User.find();
+// Função privada para listar todos os usuários e filtrar 
+export async function getUsersById(req, res) {
+    const id = req.params.id
+    const user = await User.findById(id, '-password')
 
-        // Retorna os usuários encontrados com status 200 (OK)
-        return res.status(200).json(users);
-    } catch (error) {
-        // Se ocorrer algum erro, exibe o erro no console e retorna um status 500 com a mensagem de erro
-        console.error(error);
-        return res.status(500).json({ error: "Erro ao listar usuários" });
+    if (!user) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
     }
+
+    res.status(200).json({ user })
 }
 
-// Função para buscar usuários filtrados por nome e ordenados por nome ou idade
-export async function getFilteredUsers(req, res) {
+// Função para registrar usuário
+export async function registerUser(req, res) {
+    const { name, email, birth, password, confirmPassword } = req.body;
+
+    //validacao
+    if (!name) {
+        return res.status(422).json({ message: "O nome é obrigatório!" });
+    }
+    if (!email) {
+        return res.status(422).json({ message: "O e-mail é obrigatório!" });
+    }
+    if (!birth) {
+        return res.status(422).json({ message: "A data de nascimento é obrigatória!" });
+    }
+    if (!password) {
+        return res.status(422).json({ message: "A senha é obrigatória!" });
+    }
+
+    if (password !== confirmPassword) {
+        return res.status(422).json({ message: "As senhas não conferem!" });
+    }
+
+    // Verifica se já existe um usuário com o mesmo e-mail
+    const existingUser = await User.findOne({ email: email });
+    if (existingUser) {
+        return res.status(422).json({ error: "E-mail já está em uso" });
+    }
+
+    // criar senha
+    const salt = await bcrypt.genSalt(12)
+    const passwordHash = await bcrypt.hash(password, salt);
+
+    // criando usuario 
+    const user = new User({
+        name,
+        email,
+        birth,
+        password: passwordHash,
+    })
+
+    try {
+        await user.save()
+        return res.status(201).json({ message: "Usuário criado com sucesso" });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao salvar usuário" });
+    }
+
+}
+
+// Função para fazer login na aplicacao 
+export async function loginUser(req, res) {
+    const { email, password } = req.body;
+
+    if (!email) {
+        return res.status(422).json({ message: "O e-mail é obrigatório!" });
+    }
+    if (!password) {
+        return res.status(422).json({ message: "A senha é obrigatória!" });
+    }
+
+    //conferir se o usuario existe
+    const user = await User.findOne({ email: email });
+    if (!user) {
+        return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    //conferir se a senha esta correta
+    const checkPassword = await bcrypt.compare(password, user.password)
+    if (!checkPassword) {
+        return res.status(404).json({ message: "Senha inválida!" });
+    }
+
+    try {
+        const secret = process.env.SECRET
+        const token = jwt.sign(
+            {
+                id: user._id,
+            },
+            secret,
+        )
+
+        res.status(200).json({ message: "Autenticação realizada com sucesso", token });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Erro ao fazer login" });
+    }
+
+}
+
+// Função para listar todos os usuários e filtrar
+export async function getUsers(req, res) {
     try {
         // Extrai os parâmetros da query string: nome, ordenação por nome e ordenação por idade
         const { name, orderByName, orderByAge } = req.query;

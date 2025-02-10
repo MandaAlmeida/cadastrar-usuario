@@ -1,16 +1,38 @@
 import express from "express";
-import { addUser, deleteUser, getUsers, updateUser, getFilteredUsers } from "../controllers/user.js";
+import { deleteUser, getUsers, updateUser, registerUser, loginUser, getUsersById } from "../controllers/user.js";
+import jwt from "jsonwebtoken";
+
+function ckeckToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1]
+
+    if (!token) {
+        return res.status(401).json({ message: "Acesso negado" })
+    }
+
+    try {
+        const secret = process.env.SECRET
+        const tokem = jwt.verify(token, secret)
+        console.log(tokem)
+        next()
+
+    } catch (error) {
+        res.status(400).json({ message: "Token inválido!" });
+    }
+}
 
 const router = express.Router()
 
-router.get("/", getUsers)
+router.get("/users", getUsers)
 
-router.get("/filter", getFilteredUsers);
+router.get("/users/:id", ckeckToken, getUsersById)
 
-router.post("/", addUser)
+router.post("/auth/register", registerUser);
 
-router.put("/:id", updateUser)
+router.post("/auth/login", loginUser);
 
-router.delete("/:id", deleteUser)
+router.put("/:id", updateUser);
+
+router.delete("/:id", deleteUser);
 
 export default router

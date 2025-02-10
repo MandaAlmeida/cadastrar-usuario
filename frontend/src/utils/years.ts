@@ -1,13 +1,15 @@
 export function calculateAge(date: string) {
+    // Converte "DD/MM/YYYY" para "YYYY-MM-DD"
+    const [day, month, year] = date.split("/");
+    const birth = new Date(`${year}-${month}-${day}`);
 
-    const birth = new Date(date);
-
+    if (isNaN(birth.getTime())) {
+        console.error("Data inválida:", date); // Ajuda a depurar erros
+        return "Data inválida";
+    }
 
     const today = new Date();
-
-
     let age = today.getFullYear() - birth.getFullYear();
-
 
     const currentMonth = today.getMonth();
     const birthdayMonth = birth.getMonth();

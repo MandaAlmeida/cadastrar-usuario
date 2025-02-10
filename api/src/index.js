@@ -2,15 +2,27 @@ import express from "express";
 import mongoose from "mongoose";
 import userRoutes from "./routes/users.js";
 import cors from "cors";
+import { config } from "dotenv";
 
-const app = express()
-app.use(express.json())
-app.use(cors())
+config();
 
-app.use("/", userRoutes)
-const port = 3001
+const app = express();
+app.use(express.json());
+app.use(cors());
 
-app.listen(port, () => {
-    mongoose.connect(`mongodb+srv://almeidafonseca15:Ph4M4MO1N64GNgwF@cluster.x73zs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster`)
-    console.log(`Exemplo app listening na porta ${port}`)
-})
+const port = 3001;
+const mongoURI = process.env.MONGO_URI;
+
+
+mongoose.connect(mongoURI)
+    .then(() => {
+        app.listen(port, () => {
+            console.log(`Conectado ao Banco de Dados!`);
+        });
+    })
+    .catch((error) => {
+        console.error("Erro ao conectar ao banco:", error);
+    });
+
+// Definição das rotas deve vir depois dos middlewares
+app.use("/", userRoutes);
