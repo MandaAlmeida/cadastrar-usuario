@@ -9,6 +9,7 @@ Este projeto consiste na construção de uma API de CRUD de usuários utilizando
 ## Funcionalidades
 
 ### Back-end (API)
+
 - **Cadastrar um novo usuário**: Endpoint para criar um novo usuário com informações básicas, como nome, e-mail e data de nascimento.
 - **Listar todos os usuários**: Endpoint que lista todos os usuários, com a possibilidade de adicionar filtros de pesquisa e ordenação
 - **Listar um usuário**: Endpoint para listar as informações detalhadas de um usuário específico.
@@ -17,6 +18,7 @@ Este projeto consiste na construção de uma API de CRUD de usuários utilizando
 - **Validação de dados**: Garantir que os dados enviados para os endpoints sejam válidos e que o usuário exista antes de realizar qualquer operação.
 
 ### Front-end
+
 - Interface de usuário em **React** utilizando **Tailwind CSS** para o design.
 - Funcionalidades para interagir com a API do back-end.
 - Realização de operações CRUD (Criar, Ler, Atualizar, Excluir) diretamente pela interface de usuário.
@@ -24,6 +26,7 @@ Este projeto consiste na construção de uma API de CRUD de usuários utilizando
 ## Tecnologias Utilizadas
 
 ### Back-end
+
 - **Node.js**: Ambiente de execução JavaScript para o back-end.
 - **Express**: Framework web para criação de APIs.
 - **Mongoose**: Biblioteca para modelar e interagir com o MongoDB.
@@ -35,6 +38,7 @@ Este projeto consiste na construção de uma API de CRUD de usuários utilizando
 - **jsonwebtoken**: Biblioteca para geração e verificação de tokens JWT.
 
 ### Front-end
+
 - **React**: Biblioteca JavaScript para construção de interfaces de usuário.
 - **Tailwind CSS**: Framework CSS para design rápido e customizável.
 - **Axios**: Biblioteca para fazer requisições HTTP.
@@ -70,7 +74,7 @@ Este projeto consiste na construção de uma API de CRUD de usuários utilizando
    npm run dev
    ```
 
-A API estará disponível em http://localhost:3001/.
+A API estará disponível em https://cadastrar-usuario-zrsv.vercel.app/.
 
 ### Front-end
 
@@ -81,11 +85,13 @@ A API estará disponível em http://localhost:3001/.
 ```bash
 npm install
 ```
+
 3. Após a instalação, inicie o servidor de desenvolvimento:
 
 ```bash
 npm run dev
 ```
+
 A interface do front-end estará disponível em http://localhost:5173/.
 
 Estrutura do Projeto
@@ -96,6 +102,7 @@ Estrutura do Projeto
 ### Endpoints da API
 
 ### 1. Criar um usuário
+
 - **Rota:** `POST /register`
 - **Descrição:** Registra um novo usuário.
 - **Parâmetros:**
@@ -116,6 +123,7 @@ Estrutura do Projeto
   ```
 
 ### 2. Autenticação (Login)
+
 - **Rota:** `POST /login`
 - **Descrição:** Autentica um usuário e retorna um token JWT.
 - **Parâmetros:**
@@ -142,19 +150,19 @@ Estrutura do Projeto
 #### Exemplo de Requisição:
 
 ```http
-GET http://localhost:3001/users/65a9cbd432f5bc1234567890
+GET https://cadastrar-usuario-zrsv.vercel.app/users/65a9cbd432f5bc1234567890
 ```
 
 #### Exemplo de Resposta:
 
 ```json
 {
-    "user": {
-        "_id": "65a9cbd432f5bc1234567890",
-        "name": "João Silva",
-        "email": "joao@email.com",
-        "birth": "1990-06-15"
-    }
+  "user": {
+    "_id": "65a9cbd432f5bc1234567890",
+    "name": "João Silva",
+    "email": "joao@email.com",
+    "birth": "1990-06-15"
+  }
 }
 ```
 
@@ -174,25 +182,25 @@ GET http://localhost:3001/users/65a9cbd432f5bc1234567890
 #### Exemplo de Requisição:
 
 ```http
-GET http://localhost:3001/users
+GET https://cadastrar-usuario-zrsv.vercel.app/users
 ```
 
 #### Exemplo de Resposta:
 
 ```json
 [
-    {
-        "_id": "65a9cbd432f5bc1234567890",
-        "name": "João Silva",
-        "email": "joao@email.com",
-        "birth": "1990-06-15"
-    },
-    {
-        "_id": "65a9cbd432f5bc1234567891",
-        "name": "Maria Oliveira",
-        "email": "maria@email.com",
-        "birth": "1995-08-20"
-    }
+  {
+    "_id": "65a9cbd432f5bc1234567890",
+    "name": "João Silva",
+    "email": "joao@email.com",
+    "birth": "1990-06-15"
+  },
+  {
+    "_id": "65a9cbd432f5bc1234567891",
+    "name": "Maria Oliveira",
+    "email": "maria@email.com",
+    "birth": "1995-08-20"
+  }
 ]
 ```
 
@@ -212,19 +220,19 @@ GET http://localhost:3001/users
 #### Exemplo de Requisição:
 
 ```http
-GET http://localhost:3001/users?name=Maria&orderByName=true&orderByAge=true
+GET https://cadastrar-usuario-zrsv.vercel.app/users?name=Maria&orderByName=true&orderByAge=true
 ```
 
 #### Exemplo de Resposta:
 
 ```json
 [
-    {
-        "_id": "65a9cbd432f5bc1234567891",
-        "name": "Maria Oliveira",
-        "email": "maria@email.com",
-        "birth": "1995-08-20"
-    }
+  {
+    "_id": "65a9cbd432f5bc1234567891",
+    "name": "Maria Oliveira",
+    "email": "maria@email.com",
+    "birth": "1995-08-20"
+  }
 ]
 ```
 
@@ -244,14 +252,14 @@ GET http://localhost:3001/users?name=Maria&orderByName=true&orderByAge=true
 #### Exemplo de Requisição:
 
 ```http
-DELETE http://localhost:3001/users/65a9cbd432f5bc1234567890
+DELETE https://cadastrar-usuario-zrsv.vercel.app/users/65a9cbd432f5bc1234567890
 ```
 
 #### Exemplo de Resposta:
 
 ```json
 {
-    "message": "Usuário deletado com sucesso"
+  "message": "Usuário deletado com sucesso"
 }
 ```
 
@@ -264,13 +272,14 @@ DELETE http://localhost:3001/users/65a9cbd432f5bc1234567890
 ---
 
 ### Melhorias frontend
+
 - Criar uma pagina de login no frontend
 - Criar pagina separa para registro
-- Fazer desig responsivo 
+- Fazer desig responsivo
 - Mudar rota de busca para a privada
 
-
 ### Considerações Finais
+
 - A validação de segurança está implementada para verificar se o e-mail do usuário já está registrado antes de criar um novo usuário.
 - A API utiliza o MongoDB para persistir os dados dos usuários.
 - O sistema de front-end foi feito para ser simples e fácil de usar, utilizando React com Tailwind CSS.
